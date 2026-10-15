@@ -110,6 +110,7 @@ body{padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(s
 #vk #vk-cityb{font-size:14px;padding:7px 12px!important}
 #vk select{min-height:44px}
 #vk input#vk-dy{min-height:44px}
+#vk a.vk-ai{display:inline-block;padding:8px 14px;min-height:40px;font-weight:600;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:8px;text-decoration:none}#vk a.vk-ai:hover{border-color:var(--ac)}#vk #vk-kf{line-height:1.8}
 @media(max-width:380px){#vk .vk-r3{grid-template-columns:1fr 1fr}#vk .vk-r3 #vk-dy,#vk .vk-r3 #vk-tap{grid-column:1/-1}}
 </style>
 </head>
@@ -117,8 +118,9 @@ body{padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(s
 <noscript><p style="padding:16px;font-family:sans-serif">JavaScript must be enabled to use this tool.</p></noscript>
 <div class="vk-ad" data-slot="top" hidden></div>
 <div id="vk"><div class="vk-top"><div class="vk-title">Create your prompt</div></div>
+<p class="vk-n" style="margin:6px 0 0">Enter your birth details to get your birth chart (kundli) and a ready-to-paste AI prompt. It takes about a minute. Your date and time of birth are processed in your browser and are not sent anywhere; only the place name is sent to OpenStreetMap to find its coordinates.</p>
 <div class="vk-card">
-<div id="vk-pfw" hidden><label>Saved profiles</label><div class="vk-r" style="grid-template-columns:1fr auto"><select id="vk-pf"></select><button id="vk-pd" class="vk-sec vk-auto">Delete profile</button></div></div>
+<div id="vk-pfw" hidden><label>Saved profiles</label><div class="vk-r" style="grid-template-columns:1fr auto"><select id="vk-pf"></select><button id="vk-pd" class="vk-sec vk-auto">Delete profile</button></div><div class="vk-n">Profiles are saved only on this device.</div></div>
 <h3 style="margin-top:0">Step 1 &#183; Birth details <span style="font-weight:400;font-size:13px">(* required)</span></h3>
 <label>Name (optional)</label><input id="vk-nm" placeholder="e.g. Pawan" autocomplete="off">
 <label>Gender (optional)</label><select id="vk-gn"><option value="">Prefer not to say</option><option value="Female">Female</option><option value="Male">Male</option><option value="Other">Other</option></select>
@@ -146,8 +148,9 @@ body{padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(s
 <button id="vk-go">Create my prompt</button>
 </div>
 <div id="vk-res" hidden><div class="vk-ready" id="vk-ready" role="status" hidden><button type="button" class="vk-x" id="vk-rx" aria-label="Close this message">&times;</button><b id="vk-rt"></b><p id="vk-rp"></p><button type="button" class="vk-sec vk-auto" id="vk-ca" hidden style="margin-top:10px">Copy again</button></div>
-<div class="vk-card"><h3 style="margin-top:0">Step 3 &#183; Copy your prompt</h3><div class="vk-n">Paste it into ChatGPT, Claude or Gemini. The prompt tells the AI to reply in simple Hindi.</div><button id="vk-cp">Copy prompt</button><textarea id="vk-out" style="margin-top:8px"></textarea></div>
+<div class="vk-card"><h3 style="margin-top:0">Step 3 &#183; Copy your prompt</h3><div class="vk-n">Paste it into ChatGPT, Claude or Gemini. The prompt tells the AI to reply in simple Hindi.</div><button id="vk-cp">Copy prompt</button><div class="vk-tabs"><span class="vk-n" style="margin:0">Copy and open:</span><a class="vk-ai" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a><a class="vk-ai" href="https://claude.ai/new" target="_blank" rel="noopener">Claude</a><a class="vk-ai" href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini</a></div><textarea id="vk-out" style="margin-top:8px"></textarea></div>
 <div class="vk-ad" data-slot="mid" hidden></div>
+<div class="vk-card" id="vk-kf"></div>
 <h3>Birth chart</h3>
 <div class="vk-n" id="vk-tuw2" hidden style="color:#b3261e;font-weight:600">&#9888; You gave an approximate birth time, so the ascendant, houses and divisional charts are not reliable. Insights based on the Moon sign are more dependable.</div>
 <div class="vk-tabs" id="vk-tabs"></div>
@@ -171,7 +174,7 @@ const YG='Vishkambha,Priti,Ayushman,Saubhagya,Shobhana,Atiganda,Sukarma,Dhriti,S
 const TT='Pratipada,Dwitiya,Tritiya,Chaturthi,Panchami,Shashthi,Saptami,Ashtami,Navami,Dashami,Ekadashi,Dwadashi,Trayodashi,Chaturdashi'.split(',');
 const KM=['Bava','Balava','Kaulava','Taitila','Gara','Vanija','Vishti (Bhadra)'];
 const DL=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'],DY=[7,20,6,10,7,18,16,19,17];
-const CITY=[['Delhi',28.61,77.21,5.5],['Gurugram',28.46,77.03,5.5],['Noida',28.54,77.39,5.5],['Rohtak',28.89,76.61,5.5],['Hisar',29.15,75.72,5.5],['Karnal',29.69,76.99,5.5],['Panipat',29.39,76.97,5.5],['Chandigarh',30.73,76.78,5.5],['Ludhiana',30.9,75.86,5.5],['Amritsar',31.63,74.87,5.5],['Jaipur',26.91,75.79,5.5],['Agra',27.18,78.02,5.5],['Meerut',28.98,77.71,5.5],['Lucknow',26.85,80.95,5.5],['Kanpur',26.45,80.35,5.5],['Varanasi',25.32,83.01,5.5],['Patna',25.59,85.14,5.5],['Kolkata',22.57,88.36,5.5],['Mumbai',19.08,72.88,5.5],['Pune',18.52,73.86,5.5],['Ahmedabad',23.02,72.57,5.5],['Bhopal',23.26,77.41,5.5],['Indore',22.72,75.86,5.5],['Nagpur',21.15,79.09,5.5],['Hyderabad',17.39,78.49,5.5],['Bengaluru',12.97,77.59,5.5],['Chennai',13.08,80.27,5.5],['Dehradun',30.32,78.03,5.5],['Kathmandu',27.72,85.32,5.75],['Dubai',25.2,55.27,4],['London',51.51,-0.13,0],['New York',40.71,-74.01,-5],['Other (enter latitude/longitude manually)',0,0,5.5]];
+const CITY=[['Delhi',28.61,77.21,'Asia/Kolkata'],['Gurugram',28.46,77.03,'Asia/Kolkata'],['Noida',28.54,77.39,'Asia/Kolkata'],['Rohtak',28.89,76.61,'Asia/Kolkata'],['Hisar',29.15,75.72,'Asia/Kolkata'],['Karnal',29.69,76.99,'Asia/Kolkata'],['Panipat',29.39,76.97,'Asia/Kolkata'],['Chandigarh',30.73,76.78,'Asia/Kolkata'],['Ludhiana',30.9,75.86,'Asia/Kolkata'],['Amritsar',31.63,74.87,'Asia/Kolkata'],['Jaipur',26.91,75.79,'Asia/Kolkata'],['Agra',27.18,78.02,'Asia/Kolkata'],['Meerut',28.98,77.71,'Asia/Kolkata'],['Lucknow',26.85,80.95,'Asia/Kolkata'],['Kanpur',26.45,80.35,'Asia/Kolkata'],['Varanasi',25.32,83.01,'Asia/Kolkata'],['Patna',25.59,85.14,'Asia/Kolkata'],['Kolkata',22.57,88.36,'Asia/Kolkata'],['Mumbai',19.08,72.88,'Asia/Kolkata'],['Pune',18.52,73.86,'Asia/Kolkata'],['Ahmedabad',23.02,72.57,'Asia/Kolkata'],['Bhopal',23.26,77.41,'Asia/Kolkata'],['Indore',22.72,75.86,'Asia/Kolkata'],['Nagpur',21.15,79.09,'Asia/Kolkata'],['Hyderabad',17.39,78.49,'Asia/Kolkata'],['Bengaluru',12.97,77.59,'Asia/Kolkata'],['Chennai',13.08,80.27,'Asia/Kolkata'],['Dehradun',30.32,78.03,'Asia/Kolkata'],['Kathmandu',27.72,85.32,'Asia/Kathmandu'],['Dubai',25.2,55.27,'Asia/Dubai'],['London',51.51,-0.13,'Europe/London'],['New York',40.71,-74.01,'America/New_York']];
 const EL={Me:[.38709927,.20563593,7.00497902,252.2503235,77.45779628,48.33076593,.00000037,.00001906,-.00594749,149472.67411175,.16047689,-.12534081],
 Ve:[.72333566,.00677672,3.39467605,181.9790995,131.60246718,76.67984255,.0000039,-.00004107,-.0007889,58517.81538729,.00268329,-.27769418],
 Ea:[1.00000261,.01671123,-.00001531,100.46457166,102.93768193,0,.00000562,-.00004392,-.01294668,35999.37244981,.32327364,0],
@@ -181,12 +184,23 @@ Sa:[9.53667594,.05386179,2.48599187,49.95424423,92.59887831,113.66242448,-.00125
 function hel(k,T){const e=EL[k],f=i=>e[i]+e[i+6]*T,a=f(0),ec=f(1),I=f(2)*R,w=f(4),O=f(5)*R;let M=N(f(3)-w);if(M>180)M-=360;M*=R;let E=M+ec*Math.sin(M);for(let i=0;i<9;i++)E-=(E-ec*Math.sin(E)-M)/(1-ec*Math.cos(E));
 const xp=a*(Math.cos(E)-ec),yp=a*Math.sqrt(1-ec*ec)*Math.sin(E),om=(w-f(5))*R,c=Math.cos,s=Math.sin;
 return[(c(om)*c(O)-s(om)*s(O)*c(I))*xp+(-s(om)*c(O)-c(om)*s(O)*c(I))*yp,(c(om)*s(O)+s(om)*c(O)*c(I))*xp+(-s(om)*s(O)+c(om)*c(O)*c(I))*yp]}
-const ay=T=>23.85306+1.396971*T+.0003086*T*T;
-function moon(T){const L=218.3164477+481267.88123421*T,D=(297.8501921+445267.1114034*T)*R,M=(357.5291092+35999.0502909*T)*R,P=(134.9633964+477198.8675055*T)*R,F=(93.272095+483202.0175233*T)*R,s=Math.sin;
-const x=6288774*s(P)+1274027*s(2*D-P)+658314*s(2*D)+213618*s(2*P)-185116*s(M)-114332*s(2*F)+58793*s(2*D-2*P)+57066*s(2*D-M-P)+53322*s(2*D+P)+45758*s(2*D-M)-40923*s(M-P)-34720*s(D)-30383*s(M+P)+15327*s(2*D-2*F)-12528*s(P+2*F)+10980*s(P-2*F);
+const ay=T=>23.8571+1.396971*T+.0003086*T*T;
+function dTs(jd){const y=2000+(jd-2451545)/365.25,u=(y-1820)/100;let t;
+if(y<1900)return-20+32*u*u;
+if(y<1920){t=y-1900;return-2.79+1.494119*t-.0598939*t*t+.0061966*t**3-.000197*t**4}
+if(y<1941){t=y-1920;return 21.2+.84493*t-.0761*t*t+.0020936*t**3}
+if(y<1961){t=y-1950;return 29.07+.407*t-t*t/233+t**3/2547}
+if(y<1986){t=y-1975;return 45.45+1.067*t-t*t/260-t**3/718}
+if(y<2005){t=y-2000;return 63.86+.3345*t-.060374*t*t+.0017275*t**3+.000651814*t**4+.00002373599*t**5}
+if(y<2050){t=y-2000;return 62.92+.32217*t+.005589*t*t}
+return-20+32*u*u-(y<2150?.5628*(2150-y):0)}
+const MT=[[0,0,1,0,6288774],[2,0,-1,0,1274027],[2,0,0,0,658314],[0,0,2,0,213618],[0,1,0,0,-185116],[0,0,0,2,-114332],[2,0,-2,0,58793],[2,-1,-1,0,57066],[2,0,1,0,53322],[2,-1,0,0,45758],[0,1,-1,0,-40923],[1,0,0,0,-34720],[0,1,1,0,-30383],[2,0,0,-2,15327],[0,0,1,2,-12528],[0,0,1,-2,10980],[4,0,-1,0,10675],[0,0,3,0,10034],[4,0,-2,0,8548],[2,1,-1,0,-7888],[2,1,0,0,-6766],[1,0,-1,0,-5163],[1,1,0,0,4987],[2,-1,1,0,4036],[2,0,2,0,3994],[4,0,0,0,3861],[2,0,-3,0,3665],[0,1,-2,0,-2689],[2,0,-1,2,-2602],[2,-1,-2,0,2390],[1,0,1,0,-2348],[2,-2,0,0,2236],[0,1,2,0,-2120],[0,2,0,0,-2069],[2,-2,-1,0,2048],[2,0,1,-2,-1773],[2,0,0,2,-1595],[4,-1,-1,0,1215],[0,0,2,2,-1110],[3,0,-1,0,-892],[2,1,1,0,-810],[4,-1,-2,0,759],[0,2,-1,0,-713],[2,2,-1,0,-700],[2,1,-2,0,691],[2,-1,0,-2,596],[4,0,1,0,549],[0,0,4,0,537],[4,-1,0,0,520],[1,0,-2,0,-487],[2,1,0,-2,-399],[0,0,2,-2,-381],[1,1,1,0,351],[3,0,-2,0,-340],[4,0,-3,0,330],[2,-1,2,0,327],[0,2,1,0,-323],[1,1,-1,0,299],[2,0,3,0,294]];
+function moon(T){const t2=T*T,t3=t2*T,L=218.3164477+481267.88123421*T-.0015786*t2+t3/538841,D=(297.8501921+445267.1114034*T-.0018819*t2+t3/545868)*R,M=(357.5291092+35999.0502909*T-.0001536*t2)*R,P=(134.9633964+477198.8675055*T+.0087414*t2+t3/69699)*R,F=(93.272095+483202.0175233*T-.0036539*t2-t3/3526000)*R,E=1-.002516*T-.0000074*t2,s=Math.sin;
+let x=3958*s((119.75+131.849*T)*R)+1962*s(L*R-F)+318*s((53.09+479264.29*T)*R);
+MT.forEach(r=>{const k=Math.abs(r[1]);x+=r[4]*(k==1?E:k==2?E*E:1)*s(r[0]*D+r[1]*M+r[2]*P+r[3]*F)});
 return N(L+x/1e6-ay(T))}
-function pos(jd){const T=(jd-2451545)/36525,e=hel('Ea',T),g=k=>{const p=hel(k,T);return N(Math.atan2(p[1]-e[1],p[0]-e[0])/R-23.85306)},ra=N(125.0445479-1934.1362891*T-ay(T));
-return[N(Math.atan2(-e[1],-e[0])/R-23.85306),moon(T),g('Ma'),g('Me'),g('Ju'),g('Ve'),g('Sa'),ra,N(ra+180)]}
+function pos(jd){const T=(jd+dTs(jd)/864e2-2451545)/36525,e=hel('Ea',T),g=k=>{const p=hel(k,T);return N(Math.atan2(p[1]-e[1],p[0]-e[0])/R-23.8571)},ra=N(125.0445479-1934.1362891*T-ay(T));
+return[N(Math.atan2(-e[1],-e[0])/R-23.8571-.00569/Math.hypot(e[0],e[1])),moon(T),g('Ma'),g('Me'),g('Ju'),g('Ve'),g('Sa'),ra,N(ra+180)]}
 function retro(jd){const a=pos(jd-.5),b=pos(jd+.5);return a.map((x,i)=>[2,3,4,5,6].includes(i)&&N(b[i]-x)>180)}
 function JD(y,m,d,h){if(m<3){y--;m+=12}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+h/24}
 function asc(jd,lat,lon){const T=(jd-2451545)/36525,th=N(280.46061837+360.98564736629*(jd-2451545)+lon)*R,ep=(23.4392911-.0130042*T)*R;
@@ -201,11 +215,11 @@ const dm=d=>Math.floor(d)+"\u00b0"+String(Math.floor(d%1*60)).padStart(2,"0")+"'
 const nk=l=>NK[Math.floor(l/(360/27))]+" pada "+(Math.floor(l%(360/27)/(360/108))+1);
 let S,mode='D1',sty='n';
 $('city').add(new Option('— Select your city —',''));CITY.forEach((c,i)=>$('city').add(new Option(c[0],i)));
-$('city').onchange=()=>{const c=CITY[$('city').value];if(!c)return;$('lat').value=c[1];$('lon').value=c[2];$('tz').value=c[3]};
+$('city').onchange=()=>{const c=CITY[$('city').value];if(!c)return;$('lat').value=c[1];$('lon').value=c[2];$('tz').value=''};
 let ZN=null,ZP='';
 const er=m=>{$('err').textContent=m;$('err').hidden=!m};const rz=()=>{ZN=null;ZP='';$('pm').textContent=''};
 ['lat','lon','tz'].forEach(i=>$(i).addEventListener('input',rz));['dt','tm','pq'].forEach(i=>$(i).addEventListener('input',()=>er('')));$('pq').addEventListener('input',()=>{rz();$('lat').value='';$('lon').value='';$('tz').value='';$('pm').style.color=''});$('city').addEventListener('change',rz);
-$('city').addEventListener('change',()=>{const c=CITY[$('city').value];if(!c)return;ZP=c[0];$('pm').innerHTML='<b style="color:#1b7a3a">&#10004; You selected: '+c[0]+'</b>';$('tzw').hidden=true});
+$('city').addEventListener('change',()=>{const c=CITY[$('city').value];if(!c)return;ZN=c[3];ZP=c[0];$('pm').innerHTML='<b style="color:#1b7a3a">&#10004; You selected: '+c[0]+'</b>';$('tzw').hidden=true});
 $('cityb').onclick=()=>{$('city').hidden=!$('city').hidden;if(!$('city').hidden)$('city').focus()};
 function zoff(z,y,m,d,h,mi){const f=new Intl.DateTimeFormat('en-US',{timeZone:z,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric'});
 const lo=t=>{const p=Object.fromEntries(f.formatToParts(new Date(t)).map(x=>[x.type,x.value]));return Date.UTC(+p.year,p.month-1,+p.day,+p.hour,+p.minute)};
@@ -215,17 +229,17 @@ const CCZ={in:'Asia/Kolkata',np:'Asia/Kathmandu',lk:'Asia/Colombo',bd:'Asia/Dhak
 const TUL={m:'morning',a:'afternoon',e:'evening',n:'night',l:'late night / pre-dawn',x:'time completely unknown'};
 let AT=0;$('pq').addEventListener('input',()=>{clearTimeout(AT);const q=$('pq').value.trim();if(q.length>=3)AT=setTimeout(()=>$('ps').click(),1200)});
 $('tzs').onchange=()=>{ZN=$('tzs').value||null;er('');if(ZN){const[y,mo,d]=($('dt').value||'2000-01-01').split('-').map(Number),[h,mi]=($('tm').value||'12:00').split(':').map(Number);$('tz').value=zoff(ZN,y,mo,d,h,mi)}else $('tz').value=''};
-let LQ=0;const esc=s=>String(s).replace(/[<>&"]/g,'');
+let LQ=0,SEQ=0;const esc=s=>String(s).replace(/[<>&"]/g,'');
 function ap(r){ZN=null;try{new Intl.DateTimeFormat('en',{timeZone:r.tz});ZN=r.tz}catch(e){}
 $('lat').value=(+r.lat).toFixed(4);$('lon').value=(+r.lon).toFixed(4);ZP=esc(r.full||r.name);$('tzw').hidden=!!ZN;if(!ZN){$('tzs').value='';$('tz').value=''}$('city').hidden=true;
 if(ZN){const[y,mo,d]=($('dt').value||'2000-01-01').split('-').map(Number),[h,mi]=($('tm').value||'12:00').split(':').map(Number);$('tz').value=zoff(ZN,y,mo,d,h,mi)}
 $('pi').innerHTML='<b style="color:#1b7a3a">&#10004; You selected: '+esc(r.name)+'</b><br>'+(+r.lat).toFixed(4)+', '+(+r.lon).toFixed(4)+(ZN?' | '+ZN:'')+' | <a href="https://www.openstreetmap.org/?mlat='+(+r.lat)+'&mlon='+(+r.lon)+'#map=11/'+(+r.lat)+'/'+(+r.lon)+'" target="_blank" rel="noopener">Check on map</a>'}
 $('ps').onclick=async()=>{const q=$('pq').value.trim(),m=$('pm');if(!q)return;m.textContent='Searching…';
 const p=q.split(','),rest=p.slice(1).join(' ').toLowerCase().split(/\s+/).filter(Boolean);let L=null;
-if(Date.now()-LQ<1100)return;LQ=Date.now();
+if(Date.now()-LQ<1100){setTimeout(()=>$('ps').click(),1150-(Date.now()-LQ));return}LQ=Date.now();const SQ=++SEQ;
 try{const j=await(await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&accept-language=en&q='+encodeURIComponent(q))).json();
 L=j.map(x=>{const a=x.address||{},sg={},nm=[String(x.display_name||'').split(',')[0].trim(),a.state_district||a.county,a.state,a.country].filter(Boolean).filter(s=>{s=String(s).trim();if(sg[s])return false;sg[s]=1;return true}).join(', ');return{name:nm||x.display_name,full:x.display_name,lat:+x.lat,lon:+x.lon,tz:(()=>{try{return window.tzlookup?window.tzlookup(+x.lat,+x.lon):null}catch(e){return null}})()||CCZ[String(a.country_code||'').toLowerCase()]||null}})}catch(e){}
-if(L&&!L.length){m.textContent='Place not found. Try typing just the city name (e.g. Jaipur) or check the spelling. You can also pick a city from the list below.';$('city').hidden=false;return}
+if(SQ!==SEQ)return;if(L&&!L.length){m.textContent='Place not found. Try typing just the city name (e.g. Jaipur) or check the spelling. You can also pick a city from the list below.';$('city').hidden=false;return}
 if(!L){m.textContent='Search is not working right now. Please pick your city from the list below, or try again after a while.';$('city').hidden=false;return}
 const sc=r=>rest.filter(w=>(r.full||r.name).toLowerCase().includes(w)).length;L.sort((a,b)=>sc(b)-sc(a));
 m.innerHTML='<div style="font-weight:600;margin-bottom:4px">Select your exact place from below:</div><select id="vk-pr">'+L.map((r,i)=>'<option value="'+i+'">'+esc(r.name)+'</option>').join('')+'</select><div id="vk-pi" class="vk-n"></div>';
@@ -261,12 +275,12 @@ let o='<svg viewBox="0 0 400 400" font-size="11" text-anchor="middle"><g fill="n
 for(let s=0;s<12;s++){const[x,y]=G[s];o+=`<text class="vk-sn" x="${x*100+12}" y="${y*100+14}">${s+1}</text>`;let k=0;if(s==c.a)o+=`<text x="${x*100+50}" y="${y*100+30}" style="font-weight:700">Asc</text>`,k=1;
 ls.filter(p=>p.s==s).forEach(p=>{o+=`<text x="${x*100+50}" y="${y*100+30+k++*15}">${p.t}</text>`})}
 return o+'</svg>'}
-function render(){const c=cd(mode);$('tuw2').hidden=!S.tu;document.querySelectorAll('#vk-tabs button').forEach(b=>b.classList.toggle('vk-on',b.dataset.m==mode));
+function render(){const c=cd(mode);$('tuw2').hidden=!S.tu;document.querySelectorAll('#vk-tabs button').forEach(b=>{const on=b.dataset.m==mode;b.classList.toggle('vk-on',on);b.setAttribute('aria-pressed',on)});$('kf').innerHTML='<b>Your key details</b><br>Lagna (ascendant): '+SG[Math.floor(S.asc/30)]+' '+dm(S.asc%30)+(S.tu?' (approximate)':'')+'<br>Moon sign (Rashi): '+SG[Math.floor(S.lon[1]/30)]+'<br>Nakshatra: '+nk(S.lon[1])+'<br>Sun sign: '+SG[Math.floor(S.lon[0]/30)];
 $('ct').textContent={D1:'D1 – Lagna chart (Rashi)',Moon:'Moon chart (Chandra Lagna)',Gochar:'Transit (Gochar): today\'s planets, from the ascendant',Chalit:'Chalit (Bhava Chalit)'}[mode]||mode+(VNAME[+mode.slice(1)]?' ('+VNAME[+mode.slice(1)]+')':'')+' chart';
 $('chart').innerHTML=sty=='n'?north(c):south(c);
 let t='<tr><th>Planet<th>Sign<th>Degree<th>House'+(mode=='D1'?'<th>Nakshatra-Pada':'')+'</tr>';
 t+=`<tr><td>Ascendant<td>${SG[c.a]}<td>${mode=='D1'?dm(S.asc%30):''}<td>1${mode=='D1'?'<td>'+nk(S.asc):''}</tr>`;
-c.p.forEach(p=>t+=`<tr><td>${PF[p.n]}${p.r?' (R)':''}<td>${SG[p.s]}<td>${p.d!=null?dm(p.d):''}<td>${hs(c,p)}${mode=='D1'?'<td>'+nk(S.lon[p.n]):''}</tr>`);
+c.p.forEach(p=>t+=`<tr><td>${PF[p.n]}${p.r?' (R)':''}<td>${SG[mode=='Chalit'?Math.floor(S.lon[p.n]/30):p.s]}<td>${p.d!=null?dm(p.d):''}<td>${hs(c,p)}${mode=='D1'?'<td>'+nk(S.lon[p.n]):''}</tr>`);
 $('tb').innerHTML=t;$('sr').textContent='Sunrise '+S.sr[0]+', Sunset '+S.sr[1]+' (local time)';
 $('av').innerHTML='<tr><th>Planet'+[...Array(12)].map((_,i)=>'<th>'+(i+1)).join('')+'<th>Total</tr>'+S.av.B.map((r,i)=>`<tr><td>${PF[i]}`+r.map(v=>'<td>'+v).join('')+`<td>${sum(r)}</tr>`).join('')+'<tr><td><b>Sarvashtaka (SAV)</b>'+S.av.sav.map(v=>'<td><b>'+v+'</b>').join('')+`<td><b>${sum(S.av.sav)}</b></tr>`;build()}
 const AVT=[['1,2,4,7,8,9,10,11','3,6,10,11','1,2,4,7,8,9,10,11','3,5,6,9,10,11,12','5,6,9,11','6,7,12','1,2,4,7,8,9,10,11','3,4,6,10,11,12'],
@@ -284,7 +298,7 @@ function sunrs(){const{y,m,d,lat,glon:lon,tz}=S,K=360.98564736629;
 const sd=t=>{const T=(t-2451545)/36525,l=(pos(t)[0]+ay(T))*R,ep=(23.4392911-.0130042*T)*R;return[Math.atan2(Math.cos(ep)*Math.sin(l),Math.cos(l))/R,Math.asin(Math.sin(ep)*Math.sin(l))]};
 const ha=t=>((280.46061837+K*(t-2451545)+lon-sd(t)[0]+540)%360+360)%360-180;
 let tr=JD(y,m,d,12-lon/15);for(let i=0;i<4;i++)tr-=ha(tr)/K;
-const f=sg=>{let t=tr;for(let i=0;i<4;i++){const dc=sd(t)[1],c=(Math.sin(-.833*R)-Math.sin(lat*R)*Math.sin(dc))/(Math.cos(lat*R)*Math.cos(dc));if(Math.abs(c)>1)return null;t=tr+sg*Math.acos(c)/R/K}return t};
+const f=sg=>{let t=tr;for(let i=0;i<4;i++){const dc=sd(t)[1],c=(Math.sin(-.833*R)-Math.sin(lat*R)*Math.sin(dc))/(Math.cos(lat*R)*Math.cos(dc));if(Math.abs(c)>1)return null;t=tr+sg*Math.acos(c)/R/360}return t};
 const fm=t=>{if(t==null)return'Not available';const h=((((t+.5)%1)*24+tz)%24+24)%24,H=Math.floor(h),M=Math.floor((h-H)*60);return String(H).padStart(2,'0')+':'+String(M).padStart(2,'0')+':'+String(Math.min(59,Math.round(((h-H)*60-M)*60))).padStart(2,'0')};
 return[fm(f(-1)),fm(f(1))]}
 function dasha(){const u=360/27,m=S.lon[1],k=Math.floor(m/u),fr=m%u/u,l0=k%9,Y=365.25*864e5,fd=t=>new Date(t).toISOString().slice(0,10);
@@ -294,9 +308,9 @@ if(cur){const[l,a]=cur;let s=a,ca;o+=`\nCurrent Mahadasha: ${DL[l]}\nAntardashas
 for(let j=0;j<9;j++){const sl=(l+j)%9,len=DY[l]*DY[sl]/120*Y,e=s+len,on=S.now>=s&&S.now<e;o+=`- ${DL[sl]}: ${fd(s)} to ${fd(e)}${on?' <= CURRENT':''}\n`;if(on)ca=[sl,s,len];s=e}
 if(ca){let p=ca[1];for(let j=0;j<9;j++){const pl=(ca[0]+j)%9,len=ca[2]*DY[pl]/120,e=p+len;if(S.now>=p&&S.now<e){o+=`Current Pratyantar dasha: ${DL[pl]} (${fd(p)} to ${fd(e)})\n`;break}p=e}}}
 return o}
-function build(){if(!S)return;const cat=CAT[$('cat').value],A=S.asc,as=Math.floor(A/30),L=S.lon,fd=new Date(S.now).toISOString().slice(0,10),tech=$('ans').value=='tech';
+function build(){if(!S)return;const cat=CAT[$('cat').value],A=S.asc,as=Math.floor(A/30),L=S.lon,fd=(q=>q.getFullYear()+'-'+String(q.getMonth()+1).padStart(2,'0')+'-'+String(q.getDate()).padStart(2,'0'))(new Date(S.now)),tech=$('ans').value=='tech';
 const df=(m)=>{const c=cd(m);return c.p.map(p=>`- ${PF[p.n]}${p.r?' (retrograde)':''}: ${SG[p.s]}${p.d!=null?' '+dm(p.d):''}, house ${hs(c,p)}`).join('\n')};
-const dd=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(S.y,S.m-1,S.d).getDay()],df2=N(L[1]-L[0]),ti=Math.floor(df2/12),kr=Math.floor(df2/6);
+const pre=/^\d/.test(S.sr[0])&&S.tm<S.sr[0].slice(0,5),dd=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][(new Date(S.y,S.m-1,S.d).getDay()+(pre?6:0))%7],df2=N(L[1]-L[0]),ti=Math.floor(df2/12),kr=Math.floor(df2/6);
 const tn=ti==14?'Purnima':ti==29?'Amavasya':TT[ti%15],kn=kr==0?'Kimstughna':kr==57?'Shakuni':kr==58?'Chatushpada':kr==59?'Naga':KM[(kr-1)%7];
 const TS=[
 `# ROLE`,
@@ -336,12 +350,12 @@ const TT2=[
 let o=tech?TT2:TS;
 o+=`# TOPIC AND QUESTION\nTopic: ${cat[0]}\nUser's question / context: ${$('q').value.trim()||'(none, give a general reading for this topic)'}\n\n# CHART DATA\n\n`;
 o+=`== BIRTH DETAILS ==\nName: ${$('nm').value||'-'}\n${$('gn').value?'Gender: '+(GN[$('gn').value]||$('gn').value)+'\n':''}Date and time of birth: ${S.y}-${String(S.m).padStart(2,'0')}-${String(S.d).padStart(2,'0')} ${S.tm} (UTC${S.tz>=0?'+':''}${S.tz}), ${S.place}, latitude ${S.lat}, longitude ${S.glon}${S.tu?'\nBirth time is APPROXIMATE ('+TUL[S.tu]+').\nWARNING: because the birth time is approximate, the accuracy of the ascendant, houses, Chalit, divisional charts and antardashas is reduced. Do not rely on them heavily. Base the reading mainly on the Moon sign, Moon nakshatra and Mahadasha for general trends, and state clearly in your answer that the birth time is approximate.':''}\nToday's date: ${fd}\n\n`;
-o+=`== PANCHANG ==\nWeekday: ${dd}\nTithi: ${ti<15?'Shukla':'Krishna'} ${tn}\nMoon nakshatra: ${nk(L[1])}\nYoga: ${YG[Math.floor(N(L[0]+L[1])/(360/27))]}\nKarana: ${kn}\nSunrise: ${S.sr[0]}, Sunset: ${S.sr[1]} (local time)\n\n`;
+o+=`== PANCHANG ==\nWeekday (vara, changes at sunrise): ${dd}${pre?" (born before local sunrise, so the previous civil day\'s weekday applies)":""}\nTithi: ${ti<15?'Shukla':'Krishna'} ${tn}\nMoon nakshatra: ${nk(L[1])}\nYoga: ${YG[Math.floor(N(L[0]+L[1])/(360/27))]}\nKarana: ${kn}\nSunrise: ${S.sr[0]}, Sunset: ${S.sr[1]} (local time)\n\n`;
 o+=`== D1 (Rashi chart) ==\nAscendant (Lagna): ${SG[as]} ${dm(A%30)}, nakshatra ${nk(A)}\n`+L.map((l,i)=>`- ${PF[i]}${S.rt[i]?' (retrograde)':''}: ${SG[Math.floor(l/30)]} ${dm(l%30)}, ${nk(l)}, house ${(Math.floor(l/30)-as+12)%12+1}`).join('\n')+'\n\n';
 const ms=Math.floor(L[1]/30);o+=`== MOON CHART (Chandra Lagna) ==\nMoon sign: ${SG[ms]}. Houses of the planets counted from the Moon: `+L.map((l,i)=>`${PF[i]} house ${(Math.floor(l/30)-ms+12)%12+1}`).join(', ')+'\n\n';
 o+=`== KEY HOUSES FOR ${cat[0].toUpperCase()} (D1) ==\n`+cat[2].map(h=>{const s=(as+h-1)%12,lr=LORD[s],li=PF.indexOf(lr),ls=Math.floor(L[li]/30),oc=L.map((l,i)=>Math.floor(l/30)==s?PF[i]:'').filter(Boolean);return`- House ${h} ${SG[s]}: lord ${lr}, placed in ${SG[ls]} (house ${(ls-as+12)%12+1}); planets in it: ${oc.join(', ')||'none'}`}).join('\n')+'\n\n';
 cat[1].forEach(n=>{o+=`== D${n} (${VNAME[n]||'divisional'} chart, ${SG[V(A,n)]} ascendant) ==\n${df('D'+n)}\n\n`});
-o+=`== ASHTAKAVARGA (points in houses 1-12 counted from the ascendant; Bhinnashtakavarga BAV for Sun to Saturn, then Sarvashtakavarga SAV) ==\n${S.av.txt}\n\n== CHALIT (equal houses) ==\n${df('Chalit')}\n\n== TRANSITS (planets today, ${fd}; houses from the birth ascendant) ==\n${df('Gochar')}\nTransit houses from the natal Moon: ${S.tr.map((l,i)=>PF[i]+' house '+((Math.floor(l/30)-ms+12)%12+1)).join(', ')}\n\n== DASHA ==\n${dasha()}\nNote: planetary positions are computed from an approximate ephemeris; Rahu/Ketu are the mean nodes.`;
+o+=`== ASHTAKAVARGA (points in houses 1-12 counted from the ascendant; Bhinnashtakavarga BAV for Sun to Saturn, then Sarvashtakavarga SAV) ==\n${S.av.txt}\n\n== CHALIT (equal houses) ==\n${df('Chalit')}\n\n== TRANSITS (planets today, ${fd}; houses from the birth ascendant) ==\n${df('Gochar')}\nTransit houses from the natal Moon: ${S.tr.map((l,i)=>PF[i]+' house '+((Math.floor(l/30)-ms+12)%12+1)).join(', ')}\n\n== DASHA ==\n${dasha()}\nNote: Lahiri ayanamsa. Positions are computed (Moon, Sun and inner planets within about 1 arcminute; Jupiter and Saturn within a few arcminutes), so treat planets very close to a sign or nakshatra boundary with care. Rahu/Ketu are the mean nodes.`;
 o+=tech?`\n\nFINAL REMINDER: Write the entire answer in Hindi (Devanagari script), including the astrological terms.`:`\n\nFINAL REMINDER: Write the entire answer in simple Hindi (Devanagari script) and use no astrological terms.`;
 $('out').value=o}
 $('cat').onchange=build;$('ans').onchange=build;$('q').oninput=build;$('nm').oninput=build;
@@ -448,6 +462,8 @@ copyNow(function(ok){box(ok)})});
 g('vk-cp').addEventListener('click',function(){box(true)});
 g('vk-ca').addEventListener('click',function(){copyNow(function(ok){box(ok)})});
 g('vk-rx').addEventListener('click',function(){g('vk-ready').hidden=true});
+document.querySelectorAll('#vk a.vk-ai').forEach(function(a){a.addEventListener('click',function(){copyNow(function(ok){box(ok)})})});
+document.querySelectorAll('#vk label:not([for])').forEach(function(l){var n=l.nextElementSibling;if(n&&n.id&&/^(INPUT|SELECT|TEXTAREA)$/.test(n.tagName))l.htmlFor=n.id});
 })();
 </script>
 </body>
