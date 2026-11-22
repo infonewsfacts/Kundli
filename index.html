@@ -4,7 +4,7 @@
 =====================================================================
 VK BUILD MANIFEST  (read this first; keep it updated at the end of every part)
 Project : Vedic Kundli tool -> upgrade to "advanced, verified-accurate" in 9 parts
-Status  : PARTS DONE = 1,2,3,4,5,6,7,8,9   |   NEXT PART = none (ALL 9 DONE)   |   TOTAL = 9
+Status  : PARTS DONE = 1,2,3,4,5,6,7,8,9,10   |   NEXT PART = none (ALL DONE; Part 10 added on request)   |   TOTAL = 10
 Page note: this comment is invisible to visitors. Strip it only after Part 9.
 
 HOW TO CONTINUE IN A NEW CHAT
@@ -67,6 +67,9 @@ CHANGELOG
          accessibility: scope on th, aria-label on tables and chart, role=status on the self-test line, placeholder colour darkened to #7d7391 (about 4.6:1), reduced-motion rule;
          speed: question/name typing is debounced 180 ms (vkFlush runs before copying), transit scan is cached per chart; 1 more self-test; final QA run in node on 5 charts x all topics x 3 lengths.
          The manifest comment is still in the file: to remove it, delete the whole comment block at the very top of the file (from its opening to its closing comment mark, before the head tag). Markers: /*==PART-9==*/.
+ Part 10: NUMEROLOGY (extra, on request). nuv() pure engine: Mulank, Bhagyank, Chaldean name number (Latin letters only), Personal Year, Lo Shu grid (date digits + Mulank + Bhagyank, zeros ignored);
+         number-to-planet map (1 Sun,2 Moon,3 Jupiter,4 Rahu,5 Mercury,6 Venus,7 Ketu,8 Saturn,9 Mars); friendship from Parashari natural friendship (4 and 7 not scored); each number's planet is cross-checked in the kundli (sign, house, dignity).
+         Step 2 select "Numerology": Auto (keyword in the question) / Always / Off; "== NUMEROLOGY ==" prompt block with the rules used, card "Numerology" on the page, 5 more self-tests. Day/colour/gem lists are traditional and differ by source; no partner numerology yet. Markers: /*==PART-10==*/.
 KNOWN LIMITS (carry forward): strength scores are partial and only for ranking, never call them Shadbala rupas; Yoga rules differ between traditions (Manglik house 2, Kaal Sarp reverse side, Raja/Dhana are simplified pair rules); Sade Sati: today in Part 5, timeline in Part 7; double transit ignores kakshya/BAV and is counted from Lagna only; Dasha uses 365.25-day years (some software uses 360 or 365.2425, dates can differ by days); Dignity is sign-based (Moon in Taurus / Mercury in Virgo 15-20 are reported Exalted); Rahu/Ketu get no dignity or aspects;
          functional nature and Neecha Bhanga use simplified rules (stated in the prompt); Mars..Saturn use Keplerian elements (few arcmin error, best 1800-2050); no nutation applied to Sun (<0.01 deg);
          Lahiri ayanamsa only; Chalit uses Sripati (Porphyry-style madhya, sandhi = midpoints), unreliable above ~66 deg latitude.
@@ -222,6 +225,7 @@ body{padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(s
 <label>Answer style</label><select id="vk-ans"><option value="simple">Simple and clear (easy language, no astrology jargon)</option><option value="tech">Detailed (with astrological terms)</option></select>
 <label>Rahu / Ketu type</label><select id="vk-nd"><option value="m">Mean node (traditional default)</option><option value="t">True node (actual position)</option></select>
 <label>Answer length</label><select id="vk-ml"><option value="m">Standard</option><option value="s">Short (about 150 words, smaller prompt)</option><option value="d">Deep (long, detailed)</option></select>
+<label>Numerology (Ank Jyotish)</label><select id="vk-nu"><option value="a">Auto (only when your question mentions numbers, name or lucky things)</option><option value="y">Always include</option><option value="n">Do not include</option></select>
 <label>Your question or situation</label><textarea id="vk-q" style="min-height:80px;font:inherit" placeholder="e.g. Why do my relationships keep following the same pattern? What should I focus on in my love life this year?"></textarea>
 <div class="vk-n" id="vk-err" role="alert" style="color:#b3261e;font-weight:600" hidden></div>
 <button id="vk-go">Create my prompt</button>
@@ -245,6 +249,7 @@ body{padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(s
 <h3>Yogas and doshas</h3><div class="vk-card" id="vk-yg"></div>
 <h3>Vimshottari dasha</h3><div class="vk-w"><table id="vk-ds"></table></div>
 <h3>Transit timing (next 24 months)</h3><div class="vk-card" id="vk-tt"></div>
+<h3>Numerology (Ank Jyotish)</h3><div class="vk-card" id="vk-nr"></div>
 <h3>Ashtakavarga (houses 1&#8211;12 from the ascendant)</h3><div class="vk-w"><table id="vk-av"></table></div>
 <div class="vk-ad" data-slot="bottom" hidden></div>
 </div>
@@ -440,6 +445,32 @@ $('pp').onclick=()=>window.print();
 $('cs').onclick=()=>{if(!S)return;let r;try{r=navigator.clipboard.writeText(S.sm)}catch(e){r=Promise.reject()}r.then(()=>0,()=>{const a=document.createElement('textarea');a.value=S.sm;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}).then(()=>{$('cs').textContent='Copied \u2713';setTimeout(()=>$('cs').textContent='Copy summary',1800)})};
 if(navigator.share)$('sh').hidden=false;$('sh').onclick=()=>{if(S)navigator.share({title:'My birth chart summary',text:S.sm}).catch(()=>{})};
 /*==END PART-9==*/
+/*==PART-10==*/
+const nuP=[0,0,1,4,7,3,5,8,6,2],
+nuK=['','leadership, ego, independence','sensitivity, cooperation, mood swings','wisdom, teaching, optimism','unconventional, hard work, sudden changes','communication, business, restlessness','love, comfort, family, luxury','introspection, research, spirituality','discipline, karma, delay then reward','energy, courage, impulsiveness'],
+nuL=['','Sunday; orange/gold; Ruby','Monday; white/cream; Pearl','Thursday; yellow; Yellow sapphire','Saturday; blue-grey; Hessonite','Wednesday; green; Emerald','Friday; white/pink; Diamond or white sapphire','Monday; light/pastel; Cats eye','Saturday; black/dark blue; Blue sapphire','Tuesday; red; Red coral'],
+nuCH={A:1,I:1,J:1,Q:1,Y:1,B:2,K:2,R:2,C:3,G:3,L:3,S:3,D:4,M:4,T:4,E:5,H:5,N:5,X:5,U:6,V:6,W:6,O:7,Z:7,F:8,P:8},
+nuFN={1:[[2,3,9],[6,8]],2:[[1,5],[]],3:[[1,2,9],[5,6]],5:[[1,6],[2]],6:[[5,8],[1,2]],8:[[5,6],[1,2,9]],9:[[1,2,3],[5]]},
+nuDs=s=>String(s).split('').reduce((a,c)=>a+ +c,0),nuRd=n=>{while(n>9)n=nuDs(n);return n},
+nuRX=/numerolog|\bank\b|mulank|moolank|bhagyank|lucky (number|ank|date|day|colou?r)|name (change|spelling|letter|number)|naam|अंक|नाम|शुभ/i,
+nuRel=(a,b)=>a==b?'same number':!nuFN[a]||!nuFN[b]?'not scored (numbers 4 and 7 = Rahu/Ketu: sources differ)':nuFN[a][0].includes(b)?'friendly':nuFN[a][1].includes(b)?'enemy':'neutral';
+function nuv(d,m,y,cy,nm){const mu=nuRd(d),bc=nuDs(''+d+m+y),bh=nuRd(bc),py=nuRd(nuDs(d)+nuDs(m)+nuDs(cy)),L=String(nm||'').toUpperCase().replace(/[^A-Z]/g,''),nc=[...L].reduce((a,c)=>a+nuCH[c],0),lo=Array(10).fill(0);
+(''+d+m+y).replace(/0/g,'').split('').map(Number).concat([mu,bh]).forEach(x=>lo[x]++);
+return{m:mu,mc:d,b:bh,bc,py,nm:L,nc,nn:nc?nuRd(nc):0,lo,ms:[1,2,3,4,5,6,7,8,9].filter(x=>!lo[x])}}
+function nuPl(n){const i=nuP[n],l=S.lon[i],s=Math.floor(l/30);return PF[i]+' in '+SG[s]+(S.tu?'':', house '+((s-Math.floor(S.asc/30)+12)%12+1))+(i<7?', '+dig(i,S.lon):'')}
+function nuLines(){const cy=new Date(S.now).getFullYear(),v=nuv(S.d,S.m,S.y,cy,$('nm').value),r=[],g=n=>`${n} (${PF[nuP[n]]}) | traits: ${nuK[n]} | day; colour; gem (traditional, sources differ): ${nuL[n]} | in kundli: ${nuPl(n)}`,G=[[4,9,2],[3,5,7],[8,1,6]];
+r.push('Mulank (birth day '+v.mc+(v.mc>9?', reduced':'')+'): '+g(v.m));
+r.push('Bhagyank (digit sum of full date '+v.bc+(v.bc>9?', reduced':'')+([11,22,33].includes(v.bc)?'; master digit-sum, noted only':'')+'): '+g(v.b));
+r.push(v.nc?'Name number (Chaldean, letters '+v.nm+'): total '+v.nc+(v.nc>9?', reduced':'')+': '+g(v.nn):'Name number: not computed (enter the name in Latin letters)');
+r.push('Mulank sees Bhagyank as '+nuRel(v.m,v.b)+'; Bhagyank sees Mulank as '+nuRel(v.b,v.m)+(v.nn?'; Name number sees Mulank as '+nuRel(v.nn,v.m):''));
+r.push('Personal Year '+cy+': '+v.py+' ('+PF[nuP[v.py]]+'; '+nuK[v.py]+')');
+r.push('Lo Shu grid (a digit is repeated as many times as it occurs): '+G.map(w=>w.map(x=>v.lo[x]?String(x).repeat(v.lo[x]):'-').join(' | ')).join('  //  '));
+r.push('Missing digits: '+(v.ms.join(', ')||'none')+'. Repeated digits: '+([1,2,3,4,5,6,7,8,9].filter(x=>v.lo[x]>1).map(x=>x+' x'+v.lo[x]).join(', ')||'none'));
+return r}
+function nuOn(){const v=$('nu').value;return v=='y'||(v=='a'&&nuRX.test($('q').value))}
+function nuText(tech){if(!nuOn())return'';return'== NUMEROLOGY (Ank Jyotish, Indian system) ==\nRules used: Mulank = birth day reduced to 1-9. Bhagyank = all digits of the full date of birth added and reduced to 1-9. Number to planet: 1 Sun, 2 Moon, 3 Jupiter, 4 Rahu, 5 Mercury, 6 Venus, 7 Ketu, 8 Saturn, 9 Mars. Name number = Chaldean letter values (Latin letters only). Personal Year = birth day + birth month + current year, reduced. Lo Shu grid = digits of the date (zeros ignored) plus Mulank and Bhagyank. Friendship = natural planet friendship (Parashari); 4 and 7 are not scored. Day, colour and gem lists are traditional associations and differ by source.\n'+nuLines().join('\n')+'\nNumerology guidance: use these only as supporting themes next to the kundli. Numerology gives no dates, so take timing from the dasha and transit blocks. If numerology and the kundli disagree, say so and trust the kundli. No fear-based claims. Mention a gemstone only as tradition, never as a guaranteed remedy or buying advice. '+(tech?'You may name the planet of each number.':'Do not name planets in the answer; speak only of "your birth number (मूलांक)", "destiny number (भाग्यांक)" and so on.')+'\n\n'}
+function nuRender(){$('nr').innerHTML=nuLines().map(x=>'<div class="vk-n">'+x.replace(/</g,'&lt;')+'</div>').join('')+'<div class="vk-n"><b>'+(nuOn()?'Included in your prompt.':'Not included in your prompt. In Step 2 choose Numerology = Always include, or mention numbers, name or lucky things in your question (Auto).')+'</b></div>'}
+/*==END PART-10==*/
 function dTs(jd){const y=2000+(jd-2451545)/365.25,u=(y-1820)/100;let t;
 if(y<1900)return-20+32*u*u;
 if(y<1920){t=y-1900;return-2.79+1.494119*t-.0598939*t*t+.0061966*t**3-.000197*t**4}
@@ -608,13 +639,13 @@ o+=RULES+LEN[$('ml').value]+`# TOPIC AND QUESTION\nTopic: ${cat[0]}\nUser's ques
 o+=`== BIRTH DETAILS ==\nName: ${$('nm').value||'-'}\n${$('gn').value?'Gender: '+(GN[$('gn').value]||$('gn').value)+'\n':''}Date and time of birth: ${S.y}-${String(S.m).padStart(2,'0')}-${String(S.d).padStart(2,'0')} ${S.tm} (UTC${S.tz>=0?'+':''}${S.tz}), ${S.place}, latitude ${S.lat}, longitude ${S.glon}${S.tu?'\nBirth time is APPROXIMATE ('+TUL[S.tu]+').\nWARNING: because the birth time is approximate, the accuracy of the ascendant, houses, Chalit, divisional charts and antardashas is reduced. Do not rely on them heavily. Base the reading mainly on the Moon sign, Moon nakshatra and Mahadasha for general trends, and state clearly in your answer that the birth time is approximate.':''}\nToday's date: ${fd}\n\n`;
 o+=`== PANCHANG ==\nWeekday (vara, changes at sunrise): ${dd}${pre?" (born before local sunrise, so the previous civil day\'s weekday applies)":""}\nTithi: ${ti<15?'Shukla':'Krishna'} ${tn}\nMoon nakshatra: ${nk(L[1])}\nYoga: ${YG[Math.floor(N(L[0]+L[1])/(360/27))]}\nKarana: ${kn}\nSunrise: ${S.sr[0]}, Sunset: ${S.sr[1]} (local time)\n\n`;
 o+=`== D1 (Rashi chart) ==\nAscendant (Lagna): ${SG[as]} ${dm(A%30)}, nakshatra ${nk(A)}\n`+L.map((l,i)=>`- ${PF[i]}${S.rt[i]?' (retrograde)':''}: ${SG[Math.floor(l/30)]} ${dm(l%30)}, ${nk(l)}, house ${(Math.floor(l/30)-as+12)%12+1}`).join('\n')+'\n\n';
-const sh=$('ml').value=='s',ttx=tText();$('tt').innerHTML=ttx.split('\n').filter(Boolean).map(x=>'<div class="vk-n">'+x.replace(/</g,'&lt;')+'</div>').join('');$('mr').innerHTML=mText().split('\n').filter(Boolean).map(x=>'<div class="vk-n">'+x.replace(/</g,'&lt;')+'</div>').join('');o+=fText()+pstText()+(sh?'':hText()+sText())+yText()+ttx+mText();const ms=Math.floor(L[1]/30);o+=`== MOON CHART (Chandra Lagna) ==\nMoon sign: ${SG[ms]}. Houses of the planets counted from the Moon: `+L.map((l,i)=>`${PF[i]} house ${(Math.floor(l/30)-ms+12)%12+1}`).join(', ')+'\n\n';
+const sh=$('ml').value=='s',ttx=tText();nuRender();$('tt').innerHTML=ttx.split('\n').filter(Boolean).map(x=>'<div class="vk-n">'+x.replace(/</g,'&lt;')+'</div>').join('');$('mr').innerHTML=mText().split('\n').filter(Boolean).map(x=>'<div class="vk-n">'+x.replace(/</g,'&lt;')+'</div>').join('');o+=fText()+pstText()+(sh?'':hText()+sText())+yText()+ttx+mText()+nuText(tech);const ms=Math.floor(L[1]/30);o+=`== MOON CHART (Chandra Lagna) ==\nMoon sign: ${SG[ms]}. Houses of the planets counted from the Moon: `+L.map((l,i)=>`${PF[i]} house ${(Math.floor(l/30)-ms+12)%12+1}`).join(', ')+'\n\n';
 o+=`== KEY HOUSES FOR ${cat[0].toUpperCase()} (D1) ==\n`+cat[2].map(h=>{const s=(as+h-1)%12,lr=LORD[s],li=PF.indexOf(lr),ls=Math.floor(L[li]/30),oc=L.map((l,i)=>Math.floor(l/30)==s?PF[i]:'').filter(Boolean);return`- House ${h} ${SG[s]}: lord ${lr}, placed in ${SG[ls]} (house ${(ls-as+12)%12+1}); planets in it: ${oc.join(', ')||'none'}`}).join('\n')+'\n\n';
 if(!sh)cat[1].forEach(n=>{o+=`== D${n} (${VNAME[n]||'divisional'} chart, ${SG[V(A,n)]} ascendant) ==\n${df('D'+n)}\n\n`});
 o+=`== ASHTAKAVARGA (points in houses 1-12 counted from the ascendant; Bhinnashtakavarga BAV for Sun to Saturn, then Sarvashtakavarga SAV) ==\n${S.av.txt}\n\n${chText()}\n\n== TRANSITS (planets today, ${fd}; houses from the birth ascendant) ==\n${df('Gochar')}\nTransit houses from the natal Moon: ${S.tr.map((l,i)=>PF[i]+' house '+((Math.floor(l/30)-ms+12)%12+1)).join(', ')}\n\n== DASHA ==\n${dasha()}${dashaPlus()}\nNote: Lahiri ayanamsa. Positions are computed (Moon, Sun and inner planets within about 1 arcminute; Jupiter and Saturn within a few arcminutes), so treat planets very close to a sign or nakshatra boundary with care. Rahu/Ketu are the ${NODE=='t'?'true (actual) nodes':'mean nodes'}.`;
 o+=tech?`\n\nFINAL REMINDER: Write the entire answer in Hindi (Devanagari script), including the astrological terms.`:`\n\nFINAL REMINDER: Write the entire answer in simple Hindi (Devanagari script) and use no astrological terms.`;
 $('out').value=o}
-$('cat').onchange=build;$('mt').onchange=build;$('ml').onchange=build;$('nd').onchange=()=>{if(S)$('go').click()};$('ans').onchange=build;let bt=0;const bd=()=>{clearTimeout(bt);bt=setTimeout(()=>{bt=0;build()},180)};window.vkFlush=()=>{if(bt){clearTimeout(bt);bt=0;build()}};$('q').oninput=bd;$('nm').oninput=bd;
+$('cat').onchange=build;$('mt').onchange=build;$('ml').onchange=build;$('nu').onchange=build;$('nd').onchange=()=>{if(S)$('go').click()};$('ans').onchange=build;let bt=0;const bd=()=>{clearTimeout(bt);bt=setTimeout(()=>{bt=0;build()},180)};window.vkFlush=()=>{if(bt){clearTimeout(bt);bt=0;build()}};$('q').oninput=bd;$('nm').oninput=bd;
 $('cp').onclick=()=>{window.vkFlush();const t=$('out');t.focus();t.select();try{t.setSelectionRange(0,t.value.length)}catch(e){}(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).catch(()=>document.execCommand('copy'));$('cp').textContent='Copied ✓';setTimeout(()=>$('cp').textContent='Copy prompt',1800)};
 const PK='vk_profiles_v1',pl=()=>{try{return JSON.parse(localStorage.getItem(PK))||{}}catch(e){return{}}},pw=o=>{try{localStorage.setItem(PK,JSON.stringify(o))}catch(e){}};
 function pfRender(sel){const k=Object.keys(pl());$('pfw').hidden=!k.length;$('pf').innerHTML='';$('pf').add(new Option('+ New profile',''));
@@ -681,6 +712,14 @@ t('Matching: Gana table has 9 Deva, 9 Manushya, 9 Rakshasa nakshatras',GA.length
 /*==PART-9 SELFTEST==*/
 {const sv=S;try{const jd=2451545,a=asc(jd,28.6,77.2);S={y:2000,m:1,d:1,tm:'12:00',place:'Test',lon:pos(jd),asc:a,rt:retro(jd),tr:pos(jd+30),birth:Date.UTC(2000,0,1,12),now:Date.UTC(2026,0,1),tu:'',cu:cusps(a,mcL(jd,77.2))};S.av=avk();S.t7={iv:[{d:[1]}]};const L=dsum();
 t('Report summary: 8 lines, no NaN/undefined/Infinity, dasha line present',L.length==8&&!/NaN|undefined|Infinity/.test(L.join())&&/Dasha now: \w+ > /.test(L[2]))}finally{S=sv}}
+/*==PART-10 SELFTEST==*/
+{const a=nuv(1,1,2000,2026,'ABC'),b=nuv(15,3,1995,2026,'NAME'),c=nuv(29,11,1990,2026,'');
+t('Numerology: 1 Jan 2000 gives Mulank 1, Bhagyank 4; Personal Year 2026 = 3',a.m==1&&a.b==4&&a.py==3);
+t('Numerology: digit sum 33 reduces to 6; birth day 29 reduces to 2',b.bc==33&&b.b==6&&c.m==2);
+t('Numerology: Chaldean table has 26 letters, none worth 9; ABC = 6, NAME = 15 = 6',Object.keys(nuCH).length==26&&!Object.values(nuCH).includes(9)&&a.nn==6&&b.nc==15&&b.nn==6);
+t('Numerology: Lo Shu counts for 1 Jan 2000 (1 x3, 2 x1, 4 x1), missing 3,5,6,7,8,9',a.lo.join()=='0,3,1,0,1,0,0,0,0,0'&&a.ms.join()=='3,5,6,7,8,9');
+t('Numerology: friendship 1-2 friendly, 1-8 enemy, 1-5 neutral; 4 and 7 not scored',nuRel(1,2)=='friendly'&&nuRel(1,8)=='enemy'&&nuRel(1,5)=='neutral'&&/not scored/.test(nuRel(4,1)))}
+/*==END PART-10 SELFTEST==*/
 /*==END PART-9 SELFTEST==*/
 return r}
 const ST=selfTest();ST.filter(x=>!x[1]).forEach(x=>console.warn('Self-test failed:',x[0]));
