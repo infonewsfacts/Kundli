@@ -4,7 +4,7 @@
 =====================================================================
 VK BUILD MANIFEST  (read this first; keep it updated at the end of every part)
 Project : Vedic Kundli tool -> upgrade to "advanced, verified-accurate" in 9 parts
-Status  : PARTS DONE = 1,2,3,4,5,6,7,8,9,10   |   NEXT PART = none (ALL DONE; Part 10 added on request)   |   TOTAL = 10
+Status  : PARTS DONE = 1,2,3,4,5,6,7,8,9,10,11,12  |   NEXT PART = none (ALL DONE; Part 10 added on request)   |   TOTAL = 12
 Page note: this comment is invisible to visitors. Strip it only after Part 9.
 
 HOW TO CONTINUE IN A NEW CHAT
@@ -60,13 +60,14 @@ CHANGELOG
          (refreshes when topic changes), 3 more self-tests (published ingress dates, Saturn station, double-transit sets). Rahu/Ketu stations not reported. Markers: /*==PART-7==*/.
  Part 8: fText() "== TOPIC FACTS ==" (key houses: lord, placement, dignity, occupants, aspects, SAV, double transit now; topic karakas; Mahadasha/Antardasha link to key houses), RULES block (anti-hallucination),
          answer length select (Short drops Houses, Strength and varga blocks / Standard / Deep), ash() Ashtakoota from two Moon longitudes with mdata()/mText() (partner = a saved profile, boy/girl from gender fields),
-         card "Kundli matching" on page, Manglik of both charts, 4 more self-tests. Vashya scored only for the same group and Yoni only for same animal or sworn enemies (other cross-table values differ by source, so they are shown as "not scored"
-         and the total is out of the scored maximum). Gana uses 6/6/5/1/0 values, Tara 3/1.5/0, Maitri uses natural friendship. Markers: /*==PART-8==*/.
+         card "Kundli matching" on page, Manglik of both charts, 4 more self-tests. (Part 11 update: Vashya and Yoni are now fully scored from standard tables.) Gana uses 6/6/5/1/0 values, Tara 3/1.5/0, Maitri uses natural friendship. Markers: /*==PART-8==*/.
  Part 9: dsum()/dash() result dashboard (birth, Lagna/Moon/Sun, current dasha, strongest/weakest planet and houses, yogas, doshas, double transit) replaces "Your key details";
          buttons Print / save as PDF (print CSS hides the form, prompt, tabs, ads and adds a header), Copy summary, Share summary (only where the browser has navigator.share; sent only on tap);
          accessibility: scope on th, aria-label on tables and chart, role=status on the self-test line, placeholder colour darkened to #7d7391 (about 4.6:1), reduced-motion rule;
          speed: question/name typing is debounced 180 ms (vkFlush runs before copying), transit scan is cached per chart; 1 more self-test; final QA run in node on 5 charts x all topics x 3 lengths.
          The manifest comment is still in the file: to remove it, delete the whole comment block at the very top of the file (from its opening to its closing comment mark, before the head tag). Markers: /*==PART-9==*/.
+ Part 11: Ashtakoota completed on request. Vashya now scored from the standard 5x5 table (Chatushpada, Manav, Jalchar, Vanchar, Keet; boy row, girl column) and Yoni from the standard 14x14 table (0 to 4; sworn enemies = 0), so all 8 kootas are scored and the maximum is always 36. Tables differ slightly between books; the output says which table was used. 1 more self-test.
+ Part 12: matching extras (on request). pari() parihar check for the three doshas: Nadi (same sign + different nakshatra, same nakshatra + different sign, same sign lord), Bhakoot (same or mutually friendly sign lords), Gana (Graha Maitri 4 or more); raw score never changed, "total if cancellations accepted" shown separately. mExtra() adds Manglik comparison (both / one / neither) and current Mahadasha-Antardasha of both charts. 1 more self-test. Acceptance of parihar differs by tradition. Markers: /*==PART-12==*/.
  Part 10: NUMEROLOGY (extra, on request). nuv() pure engine: Mulank, Bhagyank, Chaldean name number (Latin letters only), Personal Year, Lo Shu grid (date digits + Mulank + Bhagyank, zeros ignored);
          number-to-planet map (1 Sun,2 Moon,3 Jupiter,4 Rahu,5 Mercury,6 Venus,7 Ketu,8 Saturn,9 Mars); friendship from Parashari natural friendship (4 and 7 not scored); each number's planet is cross-checked in the kundli (sign, house, dignity).
          Step 2 select "Numerology": Auto (keyword in the question) / Always / Off; "== NUMEROLOGY ==" prompt block with the rules used, card "Numerology" on the page, 5 more self-tests. Day/colour/gem lists are traditional and differ by source; no partner numerology yet. Markers: /*==PART-10==*/.
@@ -404,6 +405,8 @@ return'== TRANSIT TIMING (computed, next 24 months from today; sidereal Lahiri; 
 /*==END PART-7==*/
 /*==PART-8==*/
 const GA='DMRMDMDDRRMMDRDRDRRMMDRRMMD',VRN=[3,2,1,4,3,2,1,4,3,2,1,4],YN=[0,1,2,3,3,4,5,2,5,6,6,7,8,9,8,9,10,10,4,11,12,11,13,0,13,7,1],YE=['0-8','1-13','2-11','3-12','4-10','5-6','7-9'],
+VT=[[2,1,1,.5,1],[1,2,.5,0,1],[1,.5,2,1,1],[0,0,0,2,0],[1,1,1,0,2]],VGN=['Chatushpada','Manav','Jalchar','Vanchar','Keet'],
+YM=[[4,2,2,3,2,2,2,1,0,1,3,3,2,1],[2,4,3,3,2,2,2,2,3,1,2,3,2,0],[2,3,4,2,1,2,1,3,3,1,2,0,3,1],[3,3,2,4,2,1,1,1,1,2,2,2,0,2],[2,2,1,2,4,2,1,2,2,1,0,2,1,1],[2,2,2,1,2,4,0,2,2,1,3,3,2,1],[2,2,1,1,1,0,4,2,2,2,2,2,1,2],[1,2,3,1,2,2,2,4,3,0,3,2,2,1],[0,3,3,1,2,2,2,3,4,1,2,2,2,1],[1,1,1,2,1,1,2,0,1,4,1,1,2,1],[3,2,2,2,0,3,2,3,2,1,4,2,2,1],[3,3,0,2,2,3,2,2,2,1,2,4,3,2],[2,2,3,0,1,2,1,2,2,2,2,3,4,2],[1,0,1,2,1,1,2,1,1,1,1,2,2,4]],
 YA='Horse,Elephant,Sheep,Serpent,Dog,Cat,Rat,Cow,Buffalo,Tiger,Deer,Monkey,Mongoose,Lion'.split(','),VG=l=>[0,0,1,2,3,1,1,4,l%30<15?1:0,l%30<15?0:2,1,2][sg30(l)],GK={D:'Deva',M:'Manushya',R:'Rakshasa'},
 KAR={daily:[1],general:[0,1],love:[5,1],marriage:[5,4],career:[0,6,3],wealth:[4,5],health:[0,1],education:[3,4],children:[4]},
 RULES=['# STRICT RULES','1. Use ONLY facts listed in CHART DATA. If something is not listed, say "not in the data" instead of guessing.','2. Every claim must rest on a placement, dasha or transit that is listed. Never invent degrees, dates, yogas or planets.','3. Quote dates only from the dasha, transit and matching blocks; any other timing must be called approximate.','4. Treat "not found" yogas as absent. Strength numbers are for ranking only (not Shadbala).','5. If two indications conflict, say so and show the uncertainty. No fear-based, medical, legal or financial certainty, and no predictions of death or accidents.'].join('\n')+'\n\n',
@@ -412,17 +415,30 @@ function ash(b,g){const u=360/27,nb=Math.floor(b/u),ng=Math.floor(g/u),sb=sg30(b
 tb=((nb-ng+27)%27+1)%9,tg=((ng-nb+27)%27+1)%9,bd=x=>[3,5,7].includes(x),gb=GA[nb],gg=GA[ng],ya=YN[nb],yb=YN[ng],bk=(sb-sg+12)%12+1,nd=n=>[0,1,2,2,1,0][n%6],vb=VG(b),vg=VG(g),
 gs=gb==gg||gb=='D'&&gg=='M'?6:gb=='M'&&gg=='D'?5:gb=='D'&&gg=='R'?1:0,tr=(bd(tb)?0:1.5)+(bd(tg)?0:1.5);
 return[['Varna',1,VRN[sb]>=VRN[sg]?1:0,'boy sign varna '+VRN[sb]+' vs girl '+VRN[sg]],
-['Vashya',2,vb==vg?2:null,vb==vg?'same group':'different groups, cross table differs by source'],
+['Vashya',2,VT[vb][vg],VGN[vb]+' (boy) / '+VGN[vg]+' (girl), standard 5-group table'],
 ['Tara',3,tr,'remainders boy-to-girl '+(tg||9)+', girl-to-boy '+(tb||9)+' (3, 5, 7 are unfavourable)'],
-['Yoni',4,ya==yb?4:YE.includes(Math.min(ya,yb)+'-'+Math.max(ya,yb))?0:null,YA[ya]+' (boy) / '+YA[yb]+' (girl)'+(ya==yb?', same':YE.includes(Math.min(ya,yb)+'-'+Math.max(ya,yb))?', sworn enemies':', other pair: table differs by source')],
+['Yoni',4,YM[ya][yb],YA[ya]+' (boy) / '+YA[yb]+' (girl)'+(ya==yb?', same animal':YM[ya][yb]==0?', sworn enemies':', 14x14 yoni table')],
 ['Graha Maitri',5,ms>=1?ms==2?5:4:ms==0?(rel(lb,lg)==0?3:1):ms==-1?.5:0,PF[lb]+' (boy) / '+PF[lg]+' (girl) sign lords'],
 ['Gana',6,gs,GK[gb]+' (boy) / '+GK[gg]+' (girl)'],
 ['Bhakoot',7,[2,12,5,9,6,8].includes(bk)?0:7,'boy sign is number '+bk+' counted from the girl sign'],
 ['Nadi',8,nd(nb)==nd(ng)?0:8,nd(nb)==nd(ng)?'same nadi (dosha)':'different nadi']]}
+/*==PART-12==*/
+function pari(b,g,rows){const u=360/27,nb=Math.floor(b/u),ng=Math.floor(g/u),sb=sg30(b),sg=sg30(g),lb=LI[sb],lg=LI[sg],rel=(x,y)=>FRI[x].includes(y)?1:ENE[x].includes(y)?-1:0,ms=lb==lg?2:rel(lb,lg)+rel(lg,lb),o=[];
+if(rows[7][2]==0){const w=[];if(sb==sg&&nb!=ng)w.push('same Moon sign but different nakshatra');if(nb==ng&&sb!=sg)w.push('same nakshatra but different Moon sign');if(lb==lg&&sb!=sg)w.push('same Moon-sign lord');o.push({k:'Nadi',max:8,why:w.join('; ')})}
+if(rows[6][2]==0){o.push({k:'Bhakoot',max:7,why:lb==lg?'both Moon signs have the same lord':ms>=2?'the two sign lords are mutual friends':''})}
+if(rows[5][2]<=1){o.push({k:'Gana',max:6,why:rows[4][2]>=4?'Graha Maitri is '+rows[4][2]+' of 5 (4 or more)':''})}
+return o}
+function mExtra(M){const sm=M.pr.reduce((a,x)=>a+(x.why?x.max:0),0),nm=x=>DL[x.l],cur=D=>D.md&&D.ad?nm(D.md)+'-'+nm(D.ad)+' (Mahadasha ends '+iso(D.md.e)+')':'not in the 120-year range',
+l=['Manglik: current chart '+(M.mc?'YES':'no')+', other chart '+(M.mo?'YES':'no')+'. '+(M.mc&&M.mo?'Both are Manglik; the common rule treats this as balanced (rules differ by tradition).':M.mc||M.mo?'Only one chart is Manglik; check Mars strength and cancellation rules before concluding.':'Neither chart is Manglik.')];
+l.push(M.pr.length?'Dosha and parihar (cancellation) check: '+M.pr.map(x=>x.k+' dosha '+(x.why?'may be cancelled because '+x.why:'present, no cancellation rule applies')).join('; ')+'.'+(sm?' Total if the cancellations are accepted: '+Math.min(M.mx,M.tot+sm)+' of '+M.mx+' (the raw score above is unchanged; acceptance differs by tradition).':''):'No Nadi, Bhakoot or Gana dosha found.');
+if(M.dc.md&&M.dO.md)l.push('Current dasha: current chart '+cur(M.dc)+'; other chart '+cur(M.dO)+'.'+(M.dc.md.l==M.dO.md.l?' Both charts are in the same Mahadasha.':''));
+return l.join('\n')+'\n'}
+/*==END PART-12==*/
 function mdata(){const p=pl()[$('mt').value];if(!p||!p.dt||!p.tm||p.tz===''||p.tz==null)return null;const[y,m,d]=p.dt.split('-').map(Number),[h,i]=p.tm.split(':').map(Number),jd=JD(y,m,d,h+i/60-+p.tz),L=pos(jd),g=$('gn').value,cg=g=='Female'||(g!='Male'&&p.gn=='Male'),
 rows=ash(cg?L[1]:S.lon[1],cg?S.lon[1]:L[1]),mg=(l,a,r)=>yogas(l,a,r,S.tr[6]).find(y=>y.n=='Manglik dosha').f,k=rows.filter(r=>r[2]!=null);
-return{b:cg?L[1]:S.lon[1],g:cg?S.lon[1]:L[1],rows,tot:sum(k.map(r=>r[2])),mx:sum(k.map(r=>r[1])),mc:mg(S.lon,S.asc,S.rt),mo:mg(L,asc(jd,+p.lat,+p.lon),retro(jd)),nt:'current chart is the '+(cg?'girl':'boy')+(g=='Male'||g=='Female'?'':' (assumed from the gender fields)')+(p.tu?'; the other birth time is approximate':'')}}
-function mText(){const M=mdata();if(!M)return'';return'== KUNDLI MATCHING (Ashtakoota from the two Moon positions; '+M.nt+') ==\nBoy Moon: '+SG[sg30(M.b)]+', '+nk(M.b)+'. Girl Moon: '+SG[sg30(M.g)]+', '+nk(M.g)+'.\n'+M.rows.map(r=>'- '+r[0]+' (max '+r[1]+'): '+(r[2]==null?'not scored ('+r[3]+')':r[2]+' - '+r[3])).join('\n')+'\nTotal '+M.tot+' of '+M.mx+' scored points (Vashya and Yoni are scored only when the table is unambiguous). Manglik: current chart '+(M.mc?'YES':'no')+', other chart '+(M.mo?'YES':'no')+'.\nUse this only if the question is about the relationship.\n\n'}
+const B=cg?L[1]:S.lon[1],G=cg?S.lon[1]:L[1],pr=pari(B,G,rows),jb=Date.UTC(y,m-1,d,h,i)-p.tz*36e5,dc=dasInfo(S.birth,S.lon[1],S.now),dO=dasInfo(jb,L[1],S.now);
+return{pr,dc,dO,b:B,g:G,rows,tot:sum(k.map(r=>r[2])),mx:sum(k.map(r=>r[1])),mc:mg(S.lon,S.asc,S.rt),mo:mg(L,asc(jd,+p.lat,+p.lon),retro(jd)),nt:'current chart is the '+(cg?'girl':'boy')+(g=='Male'||g=='Female'?'':' (assumed from the gender fields)')+(p.tu?'; the other birth time is approximate':'')}}
+function mText(){const M=mdata();if(!M)return'';return'== KUNDLI MATCHING (Ashtakoota from the two Moon positions; '+M.nt+') ==\nBoy Moon: '+SG[sg30(M.b)]+', '+nk(M.b)+'. Girl Moon: '+SG[sg30(M.g)]+', '+nk(M.g)+'.\n'+M.rows.map(r=>'- '+r[0]+' (max '+r[1]+'): '+(r[2]==null?'not scored ('+r[3]+')':r[2]+' - '+r[3])).join('\n')+'\nTotal '+M.tot+' of '+M.mx+' scored points (all 8 kootas scored; Vashya and Yoni use the commonly published tables, other books differ slightly). '+mExtra(M)+'Use this only if the question is about the relationship.\n\n'}
 function fText(){const R2=stat(S.lon,S.asc,S.rt),H=hrows(),k=$('cat').value,c=CAT[k],D=dasInfo(S.birth,S.lon[1],S.now),sv=S.av.sav,n=(S.t7||(S.t7=tdata())).iv[0];
 return'== TOPIC FACTS: '+c[0]+' (pre-computed from the data below; start from these) ==\n'+c[2].map(h=>{const r=H.rows[h-1];return'- House '+h+' '+SG[r.s]+': lord '+PF[r.k]+' in house '+r.lh+' ('+r.d+'); occupants '+(r.pl.join(', ')||'none')+'; aspected by '+(r.ah.join(', ')||'none')+'; SAV '+sv[h-1]+(sv[h-1]>=28?' (good)':' (low)')+'; double transit now '+(n.d.includes(h)?'YES':'no')}).join('\n')+
 '\n- Karakas: '+KAR[k].map(i=>{const r=R2[i];return PF[i]+' house '+r.h+', '+r.d+(r.cb?', combust':'')+(r.r?', retrograde':'')}).join('; ')+
@@ -707,7 +723,9 @@ t('Double transit sets: Jupiter 1/5/7/9 and Saturn 1/3/7/10 from own house, wrap
 t('Matching: identical Moon gives Varna 1, Vashya 2, Tara 3, Yoni 4, Maitri 5, Gana 6, Bhakoot 7, Nadi 0 (total 28)',sc(ash(10,10))=='1,2,3,4,5,6,7,0');
 t('Matching: Nadi (Ashwini and Ardra same = 0, Ashwini and Bharani = 8) and Bhakoot (8th = 0, 10th = 7)',n(0,5)[7][2]==0&&n(0,1)[7][2]==8&&ash(1,151)[6][2]==0&&ash(1,91)[6][2]==7);
 t('Matching: Yoni sworn enemies Serpent and Mongoose = 0, Horse and Horse = 4; Tara with one bad remainder = 1.5',n(3,20)[3][2]==0&&n(0,23)[3][2]==4&&ash(2*u+1,1)[2][2]==1.5);
-t('Matching: Gana table has 9 Deva, 9 Manushya, 9 Rakshasa nakshatras',GA.length==27&&['D','M','R'].every(x=>GA.split(x).length==10))}
+t('Matching: Gana table has 9 Deva, 9 Manushya, 9 Rakshasa nakshatras',GA.length==27&&['D','M','R'].every(x=>GA.split(x).length==10))
+;t('Matching: Yoni 14x14 table is symmetric, diagonal 4, sworn-enemy pairs 0; Vashya diagonal 2; every pair now scored (max 36)',YM.length==14&&YM.every((r,i)=>r.length==14&&r[i]==4&&r.every((v,j)=>v==YM[j][i]))&&YE.every(e=>{const[a,b]=e.split('-');return YM[a][b]==0})&&VT.every((r,i)=>r[i]==2)&&YN.every(v=>v>=0&&v<14)&&ash(10,10).every(r=>r[2]!=null)&&ash(33,200).every(r=>r[2]!=null)&&ash(33,200).reduce((a,r)=>a+r[1],0)==36)
+;t('Matching: parihar - Nadi cancellable for same sign but different nakshatra, not for identical Moon; Bhakoot 6/8 Taurus-Libra cancellable (same lord Venus)',pari(35,41,ash(35,41)).find(x=>x.k=='Nadi').why!=''&&pari(10,10,ash(10,10)).find(x=>x.k=='Nadi').why==''&&pari(45,195,ash(45,195)).find(x=>x.k=='Bhakoot').why!='')}
 /*==END PART-8 SELFTEST==*/
 /*==PART-9 SELFTEST==*/
 {const sv=S;try{const jd=2451545,a=asc(jd,28.6,77.2);S={y:2000,m:1,d:1,tm:'12:00',place:'Test',lon:pos(jd),asc:a,rt:retro(jd),tr:pos(jd+30),birth:Date.UTC(2000,0,1,12),now:Date.UTC(2026,0,1),tu:'',cu:cusps(a,mcL(jd,77.2))};S.av=avk();S.t7={iv:[{d:[1]}]};const L=dsum();
